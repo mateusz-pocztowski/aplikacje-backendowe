@@ -1,4 +1,6 @@
-public class Main1 {
+package lab1;
+
+public class Main3 {
     static int searchIndex(int[] array, int value) {
         int index = 0;
         int limit = array.length - 1;

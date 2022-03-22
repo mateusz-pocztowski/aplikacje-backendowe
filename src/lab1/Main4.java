@@ -1,4 +1,6 @@
-public class Main2 {
+package lab1;
+
+public class Main4 {
     static int[] CRC_TABLE = new int[256];
 
     static {
@@ -21,6 +23,6 @@ public class Main2 {
     };
 
     public static void main(String[] args) {
-        System.out.println(crc32("This is example text ..."));
+        System.out.println(crc32("Test"));
     }
 }
