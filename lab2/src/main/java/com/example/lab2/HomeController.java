@@ -14,6 +14,11 @@ public class HomeController {
         return "Hello World!";
     }
 
+    @RequestMapping("/example")
+    public String example() {
+        return "example"; // example.html
+    }
+
     @RequestMapping("/example2/{name}/{age}")
     @ResponseBody
     public String example2(
