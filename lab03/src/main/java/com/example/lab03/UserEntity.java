@@ -3,13 +3,13 @@ package com.example.lab03;
 public class UserEntity
 {
     private int id;
-    private int age;
+    private String email;
     private String name;
 
-    public UserEntity(int id, String name, int age) {
+    public UserEntity(int id, String name, String email) {
         this.id = id;
-        this.age = age;
         this.name = name;
+        this.email = email;
     }
 
     public int getId() {
@@ -20,12 +20,12 @@ public class UserEntity
         this.id = id;
     }
 
-    public int getAge() {
-        return age;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {

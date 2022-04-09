@@ -1,10 +1,9 @@
 package com.example.lab03;
 
+import org.json.JSONObject;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,38 +12,65 @@ import java.util.Map;
 public class UsersController {
     private Map<Integer, UserEntity> users = new HashMap<Integer,UserEntity>();
 
-    @RequestMapping("/users")
+    @RequestMapping("/api/users")
     @ResponseBody
     public Object getAllUsers() {
         return this.users;
     }
 
-    @RequestMapping("/users/{id}/get")
+    @RequestMapping("/api/users/{id}")
     @ResponseBody
     public Object getUser(@PathVariable Integer id) {
         return this.users.get(id);
     }
 
-    @RequestMapping("/users/{id}/remove")
+    @RequestMapping(
+            value = "/api/user/create",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @ResponseBody
-    public Object removeUser(@PathVariable Integer id) {
-        return this.users.remove(id);
-    }
-
-    @RequestMapping("/users/add")
-    @ResponseBody
-    public Object addUser(
-            @RequestParam(required = true) String name,
-            @RequestParam(required = true) Integer age
-    ) {
+    public Object addUser(@RequestBody UserEntity user) {
         int id = 0;
         while (this.users.containsKey(id)) {
             id++;
         }
 
-        UserEntity user = new UserEntity(id, name, age);
+        user.setId(id);
         this.users.put(id, user);
 
-        return this.users.get(id);
+        return user;
+    }
+
+    @RequestMapping(
+            value = "/api/users/{id}/remove",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public Object removeUser(@PathVariable Integer id) {
+        this.users.remove(id);
+
+        JSONObject json = new JSONObject();
+        json.put("result", true);
+
+        return json.toString();
+    }
+
+    @RequestMapping(
+            value = "/api/user/update",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public Object updateUser(@PathVariable Integer id, @RequestBody UserEntity input) {
+        UserEntity user = this.users.get(id);
+        user.setName(input.getName());
+        user.setEmail(input.getEmail());
+
+        this.users.put(id, user);
+
+        return user;
     }
 }
