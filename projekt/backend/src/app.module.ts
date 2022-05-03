@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmConfigService } from './shared/typeorm.service';
+import { AppController } from 'src/app.controller';
+import { AppService } from 'src/app.service';
+import { TypeOrmConfigService } from 'src/shared/typeorm.service';
 
 @Module({
   imports: [
