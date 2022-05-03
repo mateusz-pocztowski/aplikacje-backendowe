@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  private validate(payload: string): Promise<User> {
+  validate(payload: string): Promise<User> {
     return this.helper.validateUser(payload);
   }
 }

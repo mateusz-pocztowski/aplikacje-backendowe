@@ -1,14 +1,25 @@
 import { Exclude } from 'class-transformer';
 import { Role } from 'src/shared/role.enum';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  DeepPartial,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
+  constructor(partial: DeepPartial<User>) {
+    super();
+    Object.assign(this, partial);
+  }
+
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column({ type: 'varchar', nullable: true })
-  public name: string | null;
+  @Column({ type: 'varchar' })
+  public name: string;
 
   @Exclude()
   @Column({ type: 'varchar' })

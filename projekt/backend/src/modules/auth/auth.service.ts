@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/modules/user/user.entity';
-import { RegisterDto, LoginDto } from 'src/modules/auth/auth.dto';
+import { RegisterDto, LoginDto, AuthDto } from 'src/modules/auth/auth.dto';
 import { AuthHelper } from 'src/modules/auth/auth.helper';
 
 @Injectable()
@@ -13,41 +13,46 @@ export class AuthService {
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 
-  public async register(body: RegisterDto): Promise<User> {
-    const { name, email, password }: RegisterDto = body;
-    let user = await this.repository.findOne({ where: { email } });
+  public async register(body: RegisterDto): Promise<User & AuthDto> {
+    let user = await this.repository.findOne({ where: { email: body.email } });
 
     if (user) {
-      throw new HttpException('Conflict', HttpStatus.CONFLICT);
+      throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
 
-    user = new User();
+    user = new User({
+      name: body.name,
+      email: body.email,
+      password: this.helper.encodePassword(body.password),
+    });
 
-    user.name = name;
-    user.email = email;
-    user.password = this.helper.encodePassword(password);
+    const savedUser: User = await this.repository.save(user);
+    const authDTO: AuthDto = {
+      jwt_token: this.helper.generateToken(user),
+    };
 
-    return this.repository.save(user);
+    return Object.assign(savedUser, authDTO);
   }
 
-  public async login(body: LoginDto): Promise<string> {
-    const { email, password } = body;
-    const user = await this.repository.findOne({ where: { email } });
+  public async login(body: LoginDto): Promise<AuthDto> {
+    const user = await this.repository.findOne({
+      where: { email: body.email },
+    });
 
     if (!user) {
       throw new HttpException('No user found', HttpStatus.NOT_FOUND);
     }
 
     const isPasswordValid = this.helper.isPasswordValid(
-      password,
+      body.password,
       user.password,
     );
 
     if (!isPasswordValid) {
-      throw new HttpException('No user found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Password is invalid', HttpStatus.NOT_FOUND);
     }
 
-    return this.helper.generateToken(user);
+    return { jwt_token: this.helper.generateToken(user) };
   }
 
   public async refresh(user: User): Promise<string> {
