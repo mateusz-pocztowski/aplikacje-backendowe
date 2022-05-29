@@ -2,11 +2,11 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { AuthHelper } from 'src/modules/auth/auth.helper';
 import { User } from 'src/modules/user/user.entity';
-import { AuthHelper } from './auth.helper';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class AuthStrategy extends PassportStrategy(Strategy) {
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 

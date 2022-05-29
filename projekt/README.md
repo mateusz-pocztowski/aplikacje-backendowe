@@ -2,7 +2,7 @@
 
 ### Temat
 
-Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do filmweb.pl). Użytkownicy zostaną podzieleni na dwie role - administrator oraz zwykły użytkownik. Administrator będzie mieć możliwość dodawania, usuwania, edytowania filmów. Tylko **zalogowani** użytkownicy będą mogli mieć możliwość oceny dostępnych na stronie filmów. Autoryzacja zostanie oparta o JWT token. Frontend będzie wydzielony osobno, napisany w Reactcie.
+Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do filmweb.pl). Użytkownicy zostaną podzieleni na trzy role - administrator, moderator oraz zwykły użytkownik. Moderator może nadawać innym użytkownikom rolę administratora. Zarówno administrator jak i moderator będzie mieć możliwość dodawania, usuwania, edytowania filmów. Tylko **zalogowani** użytkownicy będą mogli mieć możliwość oceny dostępnych na stronie filmów. Autoryzacja zostanie oparta o JWT token. Frontend będzie wydzielony osobno, napisany w Reactcie.
 
 ### Technologie
 
@@ -17,7 +17,7 @@ Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do
 1. Przygotowanie struktury projektu
 2. Stworzenie bazy danych
 3. Integracja API z bazą danych
-4. Modele użytkownika oraz administratora
+4. Modele użytkowników
 5. Mikroserwis obsługujący uwierzytelnianie
 
 <!-- 14. Zbudowanie wersji produkcyjnej

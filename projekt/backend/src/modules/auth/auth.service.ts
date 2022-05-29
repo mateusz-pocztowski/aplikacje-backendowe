@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/modules/user/user.entity';
-import { RegisterDto, LoginDto, AuthDto } from 'src/modules/auth/auth.dto';
+import { RegisterDTO, LoginDTO, AuthDTO } from 'src/modules/auth/auth.dto';
 import { AuthHelper } from 'src/modules/auth/auth.helper';
 
 @Injectable()
@@ -13,8 +13,10 @@ export class AuthService {
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 
-  public async register(body: RegisterDto): Promise<User & AuthDto> {
-    let user = await this.repository.findOne({ where: { email: body.email } });
+  async register(body: RegisterDTO): Promise<User & AuthDTO> {
+    let user = await this.repository.findOne({
+      where: [{ name: body.name }, { email: body.email }],
+    });
 
     if (user) {
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -27,14 +29,14 @@ export class AuthService {
     });
 
     const savedUser: User = await this.repository.save(user);
-    const authDTO: AuthDto = {
+    const authDTO: AuthDTO = {
       jwt_token: this.helper.generateToken(user),
     };
 
     return Object.assign(savedUser, authDTO);
   }
 
-  public async login(body: LoginDto): Promise<AuthDto> {
+  async login(body: LoginDTO): Promise<AuthDTO> {
     const user = await this.repository.findOne({
       where: { email: body.email },
     });
@@ -55,7 +57,7 @@ export class AuthService {
     return { jwt_token: this.helper.generateToken(user) };
   }
 
-  public async refresh(user: User): Promise<string> {
+  async refresh(user: User): Promise<string> {
     return this.helper.generateToken(user);
   }
 }

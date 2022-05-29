@@ -20,23 +20,23 @@ export class AuthHelper {
     this.jwt = jwt;
   }
 
-  public async decode(token: string): Promise<unknown> {
+  async decode(token: string): Promise<unknown> {
     return this.jwt.decode(token);
   }
 
-  public async validateUser(decoded: any): Promise<User> {
+  async validateUser(decoded: any): Promise<User> {
     return this.repository.findOne({ where: { id: decoded?.id } });
   }
 
-  public generateToken(user: User): string {
+  generateToken(user: User): string {
     return this.jwt.sign({ id: user.id, email: user.email });
   }
 
-  public isPasswordValid(password: string, userPassword: string): boolean {
+  isPasswordValid(password: string, userPassword: string): boolean {
     return bcrypt.compareSync(password, userPassword);
   }
 
-  public encodePassword(password: string): string {
+  encodePassword(password: string): string {
     const salt: string = bcrypt.genSaltSync(10);
 
     return bcrypt.hashSync(password, salt);

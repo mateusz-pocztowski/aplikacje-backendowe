@@ -1,36 +1,36 @@
 import { Trim } from 'class-sanitizer';
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class RegisterDto {
+export class RegisterDTO {
+  @Trim()
+  @IsString()
+  @MinLength(6)
+  @MaxLength(20)
+  readonly name: string;
+
   @Trim()
   @IsEmail()
-  public readonly email: string;
+  readonly email: string;
 
   @Trim()
   @IsString()
   @MinLength(8)
   @MaxLength(32)
-  public readonly password: string;
-
-  @Trim()
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  public readonly name: string;
+  readonly password: string;
 }
 
-export class LoginDto {
+export class LoginDTO {
   @Trim()
   @IsEmail()
-  public readonly email: string;
+  readonly email: string;
 
   @Trim()
   @IsString()
-  public readonly password: string;
+  readonly password: string;
 }
 
-export class AuthDto {
+export class AuthDTO {
   @Trim()
   @IsString()
-  public readonly jwt_token: string;
+  readonly jwt_token: string;
 }

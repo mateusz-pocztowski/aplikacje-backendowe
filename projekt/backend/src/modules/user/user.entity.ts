@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Role } from 'src/shared/role.enum';
+import { Role } from 'src/modules/auth/roles/role.enum';
 import {
   BaseEntity,
   Column,
@@ -16,18 +16,18 @@ export class User extends BaseEntity {
   }
 
   @PrimaryGeneratedColumn()
-  public id!: number;
+  id!: number;
 
   @Column({ type: 'varchar' })
-  public name: string;
+  name: string;
 
   @Exclude()
   @Column({ type: 'varchar' })
-  public password!: string;
+  password!: string;
 
   @Column({ type: 'varchar' })
-  public email!: string;
+  email!: string;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
-  public role: Role;
+  role: Role;
 }
