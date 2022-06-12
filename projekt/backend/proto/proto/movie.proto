@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package movie;
+
+service MovieService {
+  rpc CreateMovie (CreateMovieRequest) returns (CreateMovieResponse) {}
+  rpc FindOne (FindOneRequest) returns (FindOneResponse) {}
+  rpc RateMovie (RateMovieRequest) returns (RateMovieResponse) {}
+}
+
+// CreateMovie
+
+message CreateMovieRequest {
+  string name = 1;
+  string genre = 2;
+  double rate = 3;
+}
+
+message CreateMovieResponse {
+  int32 status = 1;
+  repeated string error = 2;
+  int32 id = 3;
+}
+
+// FindOne
+
+message FindOneData {
+  int32 id = 1;
+  string name = 2;
+  string genre = 3;
+  double rate = 4;
+}
+
+message FindOneRequest {
+  int32 id = 1;
+}
+
+message FindOneResponse {
+  int32 status = 1;
+  repeated string error = 2;
+  FindOneData data = 3;
+}
+
+// RateMovie
+
+message RateMovieRequest {
+  int32 id = 1;
+  double rate = 2;
+}
+
+message RateMovieResponse {
+  int32 status = 1;
+  repeated string error = 2;
+}
