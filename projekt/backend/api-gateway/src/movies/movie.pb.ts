@@ -56,6 +56,7 @@ export interface FindOneData {
   name: string;
   genre: string;
   rate: number;
+  rateCount: number;
 }
 
 export interface FindOneRequest {
@@ -77,6 +78,7 @@ export interface RateMovieRequest {
 export interface RateMovieResponse {
   status: number;
   error: string[];
+  data: FindOneData | undefined;
 }
 
 export const MOVIE_PACKAGE_NAME = 'movie';

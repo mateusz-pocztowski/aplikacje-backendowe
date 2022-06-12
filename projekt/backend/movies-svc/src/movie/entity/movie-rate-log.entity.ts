@@ -15,6 +15,9 @@ export class MovieRateLog extends BaseEntity {
   @Column({ type: 'integer' })
   public userId!: number;
 
+  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  public rate!: number;
+
   @ManyToOne(() => Movie, (movie) => movie.movieRateLogs)
   public movie: Movie;
 }

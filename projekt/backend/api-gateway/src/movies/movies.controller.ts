@@ -10,6 +10,7 @@ import {
   Body,
   Delete,
   Put,
+  Req,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
@@ -22,10 +23,13 @@ import {
   EditMovieRequest,
   EditMovieResponse,
   DeleteMovieResponse,
+  RateMovieRequest,
+  RateMovieResponse,
   MovieServiceClient,
   MOVIE_SERVICE_NAME,
 } from './movie.pb';
 import { AuthGuard } from '../auth/auth.guard';
+import { Request } from 'express';
 
 @Controller('api/movies')
 export class MoviesController implements OnModuleInit {
@@ -36,6 +40,20 @@ export class MoviesController implements OnModuleInit {
 
   public onModuleInit(): void {
     this.svc = this.client.getService<MovieServiceClient>(MOVIE_SERVICE_NAME);
+  }
+
+  @Get()
+  private async getAllMovies(
+    @Body() body: GetAllMoviesRequest,
+  ): Promise<Observable<GetAllMoviesResponse>> {
+    return this.svc.getAllMovies(body);
+  }
+
+  @Get(':id')
+  private async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Observable<FindOneResponse>> {
+    return this.svc.findOne({ id });
   }
 
   @Post()
@@ -63,17 +81,13 @@ export class MoviesController implements OnModuleInit {
     return this.svc.deleteMovie({ id });
   }
 
-  @Get()
-  private async getAllMovies(
-    @Body() body: GetAllMoviesRequest,
-  ): Promise<Observable<GetAllMoviesResponse>> {
-    return this.svc.getAllMovies(body);
-  }
-
-  @Get(':id')
-  private async findOne(
+  @Post('rate/:id')
+  @UseGuards(AuthGuard)
+  private async rateMovie(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<Observable<FindOneResponse>> {
-    return this.svc.findOne({ id });
+    @Body() body: RateMovieRequest,
+    @Req() req: Request,
+  ): Promise<Observable<RateMovieResponse>> {
+    return this.svc.rateMovie({ id, userId: req.user, ...body });
   }
 }

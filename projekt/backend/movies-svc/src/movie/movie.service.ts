@@ -56,6 +56,7 @@ export class MovieService {
     movie.name = payload.name;
     movie.genre = payload.genre;
     movie.rate = 0;
+    movie.rateCount = 0;
 
     await this.repository.save(movie);
 
@@ -106,35 +107,49 @@ export class MovieService {
     rate,
   }: RateMovieRequestDto): Promise<RateMovieResponse> {
     if (rate <= 0 || rate > 10) {
-      return { error: ['Rate is invalid'], status: HttpStatus.CONFLICT };
+      return {
+        error: ['Rate is invalid'],
+        status: HttpStatus.CONFLICT,
+        data: null,
+      };
     }
 
-    const movie: Movie = await this.repository.findOne({
-      select: ['id', 'rate'],
+    const movie = await this.repository.findOne({
       where: { id },
     });
 
     if (!movie) {
-      return { error: ['Movie not found'], status: HttpStatus.NOT_FOUND };
-    }
-
-    const isAlreadyRated: number = await this.movieRateLog.count({
-      where: { userId },
-    });
-
-    if (isAlreadyRated) {
       return {
-        error: ['Movie has been already rated'],
-        status: HttpStatus.CONFLICT,
+        error: ['Movie not found'],
+        status: HttpStatus.NOT_FOUND,
+        data: null,
       };
     }
 
-    console.log(movie.movieRateLogs);
+    const userMovieRateLog = await this.movieRateLog.findOne({
+      where: { movie: { id }, userId },
+    });
 
-    // TODO: calculate average rate
-    await this.repository.update(movie.id, { rate: rate });
-    await this.movieRateLog.insert({ movie, userId });
+    // User has already rated the movie
+    if (userMovieRateLog) {
+      await this.movieRateLog.update(userMovieRateLog.id, { rate });
+    } else {
+      await this.movieRateLog.insert({ userId, movie, rate });
+    }
 
-    return { error: null, status: HttpStatus.OK };
+    const [movieRateLog, count] = await this.movieRateLog.findAndCount({
+      where: { movie: { id } },
+    });
+
+    const avgRate =
+      movieRateLog.reduce((p, c) => p + Number(c.rate), 0) /
+      movieRateLog.length;
+
+    movie.rate = avgRate;
+    movie.rateCount = count;
+
+    await this.repository.update(movie.id, movie);
+
+    return { error: null, status: HttpStatus.OK, data: movie };
   }
 }

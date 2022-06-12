@@ -28,7 +28,6 @@ export class MovieController {
   private createMovie(
     payload: CreateMovieRequestDto,
   ): Promise<CreateMovieResponse> {
-    console.log(payload);
     return this.service.createMovie(payload);
   }
 
@@ -56,7 +55,7 @@ export class MovieController {
     return this.service.getAllMovies(payload);
   }
 
-  @GrpcMethod(MOVIE_SERVICE_NAME, 'RankMovie')
+  @GrpcMethod(MOVIE_SERVICE_NAME, 'RateMovie')
   private rateMovie(payload: RateMovieRequestDto): Promise<RateMovieResponse> {
     return this.service.rateMovie(payload);
   }
