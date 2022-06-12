@@ -43,7 +43,6 @@ export class AuthController implements OnModuleInit {
   private async getUser(
     @Req() req: Request,
   ): Promise<Observable<RegisterResponse>> {
-    console.log(req.user);
     return this.svc.getUser({ userId: req.user });
   }
 

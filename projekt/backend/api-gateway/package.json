@@ -15,8 +15,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "proto:install": "npm i file:../proto",
-    "proto:auth": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/proto/proto --ts_proto_out=./src/auth/ node_modules/proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-    "proto:movies": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/proto/proto --ts_proto_out=./src/movies/ node_modules/proto/proto/movie.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:auth": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/proto/models --ts_proto_out=./src/auth/ node_modules/proto/models/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:movies": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/proto/models --ts_proto_out=./src/movies/ node_modules/proto/models/movie.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:all": "npm run proto:auth && npm run proto:movies"
   },
   "dependencies": {
