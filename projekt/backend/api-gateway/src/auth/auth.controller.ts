@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Inject,
-  OnModuleInit,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Inject, OnModuleInit, Post } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import {
@@ -35,7 +28,7 @@ export class AuthController implements OnModuleInit {
     return this.svc.register(body);
   }
 
-  @Put('login')
+  @Post('login')
   private async login(
     @Body() body: LoginRequest,
   ): Promise<Observable<LoginResponse>> {
