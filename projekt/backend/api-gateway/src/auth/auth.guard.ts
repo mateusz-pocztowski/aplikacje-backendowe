@@ -41,12 +41,12 @@ export class AuthGuard implements CanActivate {
 
     const { status, userId, role } = await this.service.validate({ token });
 
-    if (requiredRoles != null && !requiredRoles?.includes(role)) {
-      throw new UnauthorizedException('Unauthorized role');
-    }
-
     if (status !== HttpStatus.OK) {
       throw new UnauthorizedException();
+    }
+
+    if (requiredRoles != null && !requiredRoles?.includes(role)) {
+      throw new UnauthorizedException('Unauthorized role');
     }
 
     req.user = userId;

@@ -87,7 +87,7 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Post('rate/:id')
-  @Roles(UserRole.USER)
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.USER)
   @UseGuards(AuthGuard)
   private async rateMovie(
     @Param('id', ParseIntPipe) id: number,

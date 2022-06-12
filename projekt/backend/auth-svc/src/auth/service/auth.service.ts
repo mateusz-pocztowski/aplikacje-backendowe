@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from './jwt.service';
 import {
+  GetUserRequestDto,
   RegisterRequestDto,
   LoginRequestDto,
   ValidateRequestDto,
@@ -14,6 +15,7 @@ import {
   RegisterResponse,
   ValidateResponse,
   UpdateRoleResponse,
+  GetUserResponse,
 } from '../auth.pb';
 
 @Injectable()
@@ -23,6 +25,14 @@ export class AuthService {
 
   @Inject(JwtService)
   private readonly jwtService: JwtService;
+
+  public async getUser({
+    userId,
+  }: GetUserRequestDto): Promise<GetUserResponse> {
+    const auth: Auth = await this.repository.findOne({ where: { id: userId } });
+
+    return { status: HttpStatus.CREATED, error: null, data: auth };
+  }
 
   public async register({
     email,

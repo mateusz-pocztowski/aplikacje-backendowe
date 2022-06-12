@@ -1,14 +1,19 @@
 import {
   Body,
   Controller,
+  Get,
   Inject,
   OnModuleInit,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { AuthGuard } from './auth.guard';
+import { Roles } from './roles/roles.decorator';
 import {
   AuthServiceClient,
   RegisterResponse,
@@ -32,6 +37,16 @@ export class AuthController implements OnModuleInit {
     this.svc = this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
+  @Get('me')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.USER)
+  @UseGuards(AuthGuard)
+  private async getUser(
+    @Req() req: Request,
+  ): Promise<Observable<RegisterResponse>> {
+    console.log(req.user);
+    return this.svc.getUser({ userId: req.user });
+  }
+
   @Post('register')
   private async register(
     @Body() body: RegisterRequest,
@@ -48,6 +63,7 @@ export class AuthController implements OnModuleInit {
 
   @Put('role')
   @Roles(UserRole.OWNER)
+  @UseGuards(AuthGuard)
   private async updateRole(
     @Body() body: UpdateRoleRequest,
   ): Promise<Observable<UpdateRoleResponse>> {

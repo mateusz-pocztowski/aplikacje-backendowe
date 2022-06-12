@@ -1,11 +1,23 @@
-import { IsEmail, IsEnum, IsString, MinLength } from 'class-validator';
 import {
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import {
+  GetUserRequest,
   LoginRequest,
   RegisterRequest,
   ValidateRequest,
   UpdateRoleRequest,
   UserRole,
 } from './auth.pb';
+
+export class GetUserRequestDto implements GetUserRequest {
+  @IsNumber({ allowInfinity: false, allowNaN: false })
+  public readonly userId: number;
+}
 
 export class LoginRequestDto implements LoginRequest {
   @IsEmail()

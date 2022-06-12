@@ -3,6 +3,7 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {}
   rpc Register (RegisterRequest) returns (RegisterResponse) {}
   rpc Login (LoginRequest) returns (LoginResponse) {}
   rpc Validate (ValidateRequest) returns (ValidateResponse) {}
@@ -13,6 +14,24 @@ enum UserRole {
   OWNER = 0;
   ADMIN = 1;
   USER = 2;
+}
+
+// GetUser
+
+message GetUserData {
+  int32 id = 1;
+  string email = 2;
+  UserRole role = 3;
+}
+
+message GetUserRequest {
+  int32 userId = 1;
+}
+
+message GetUserResponse {
+  int32 status = 1;
+  repeated string error = 2;
+  GetUserData data = 3;
 }
 
 // Register

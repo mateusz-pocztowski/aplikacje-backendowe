@@ -13,6 +13,22 @@ export enum UserRole {
   UNRECOGNIZED = -1,
 }
 
+export interface GetUserData {
+  id: number;
+  email: string;
+  role: UserRole;
+}
+
+export interface GetUserRequest {
+  userId: number;
+}
+
+export interface GetUserResponse {
+  status: number;
+  error: string[];
+  data: GetUserData | undefined;
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -58,6 +74,8 @@ export interface UpdateRoleResponse {
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
+  getUser(request: GetUserRequest): Observable<GetUserResponse>;
+
   register(request: RegisterRequest): Observable<RegisterResponse>;
 
   login(request: LoginRequest): Observable<LoginResponse>;
@@ -68,6 +86,10 @@ export interface AuthServiceClient {
 }
 
 export interface AuthServiceController {
+  getUser(
+    request: GetUserRequest,
+  ): Promise<GetUserResponse> | Observable<GetUserResponse> | GetUserResponse;
+
   register(
     request: RegisterRequest,
   ):
@@ -97,6 +119,7 @@ export interface AuthServiceController {
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
+      'getUser',
       'register',
       'login',
       'validate',
