@@ -1,60 +1,58 @@
 import { Repository } from 'typeorm';
-import { Request } from 'express';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UpdateUserNameDTO, UpdateUserRoleDTO } from './user.dto';
 import { Role } from '../roles/roles.enum';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
 
-  async getUser(req: Request): Promise<User> {
-    return req.user;
-  }
-
-  async updateUserName(
-    { name }: UpdateUserNameDTO,
-    req: Request,
-  ): Promise<User> {
-    let user = await this.repository.findOne({ where: { name: name } });
+  async updateUserName({
+    name,
+    user: reqUser,
+  }: UpdateUserNameDTO): Promise<User> {
+    const user = await this.repository.findOne({ where: { name: name } });
 
     if (user) {
-      throw new HttpException(`User name already exists`, HttpStatus.CONFLICT);
+      throw new RpcException({
+        status: HttpStatus.CONFLICT,
+        message: 'User name already exists',
+      });
     }
-
-    user = req.user;
 
     if (name) {
-      user.name = name;
+      reqUser.name = name;
     }
 
-    return this.repository.save(user);
+    return this.repository.save(reqUser);
   }
 
-  async updateUserRole(
-    { role, name }: UpdateUserRoleDTO,
-    req: Request,
-  ): Promise<User> {
+  async updateUserRole({ role, name }: UpdateUserRoleDTO): Promise<User> {
     if (!Object.values(Role).includes(role)) {
-      throw new HttpException('Invalid role', HttpStatus.BAD_REQUEST);
+      throw new RpcException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Invalid role',
+      });
     }
 
     const user = await this.repository.findOne({ where: { name: name } });
 
     if (!user) {
-      throw new HttpException("User doesn't exists", HttpStatus.CONFLICT);
+      throw new RpcException({
+        status: HttpStatus.CONFLICT,
+        message: `User doesn't exists`,
+      });
     }
 
-    const requestUser = req.user;
-
-    if (requestUser?.role === user.role) {
-      throw new HttpException(
-        'You can not change your own role',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (role === user.role) {
+      throw new RpcException({
+        status: HttpStatus.CONFLICT,
+        message: `You can not change your own role`,
+      });
     }
 
     user.role = role;

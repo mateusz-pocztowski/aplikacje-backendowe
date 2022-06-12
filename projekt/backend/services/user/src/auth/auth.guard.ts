@@ -15,10 +15,7 @@ export class AuthGuard implements CanActivate {
     try {
       const res = await firstValueFrom(
         this.authService
-          .send(
-            { role: 'auth', cmd: 'check' },
-            { jwt: req.headers['authorization']?.split(' ')[1] },
-          )
+          .send({ role: 'auth', cmd: 'check' }, { jwt: req.jwt })
           .pipe(timeout(5000)),
       );
 

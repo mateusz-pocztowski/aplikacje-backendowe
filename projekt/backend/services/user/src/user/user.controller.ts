@@ -1,15 +1,10 @@
 import {
   ClassSerializerInterceptor,
   Controller,
-  Req,
   UseGuards,
   UseInterceptors,
-  Get,
-  Put,
-  Body,
-  Inject,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { MessagePattern } from '@nestjs/microservices';
 import { AuthGuard } from '../auth/auth.guard';
 import { Role } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
@@ -18,36 +13,22 @@ import { UpdateUserNameDTO, UpdateUserRoleDTO } from './user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@Controller('api/user')
+@Controller()
 export class UserController {
-  @Inject(UserService)
-  private readonly service: UserService;
+  constructor(private readonly service: UserService) {}
 
-  @Get()
+  @MessagePattern({ role: 'user', cmd: 'update_name' })
   @UseGuards(AuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
-  getUser(@Req() req: Request): Promise<User> {
-    return this.service.getUser(req);
+  updateUserName(data: UpdateUserNameDTO): Promise<User> {
+    return this.service.updateUserName(data);
   }
 
-  @Put('name')
-  @UseGuards(AuthGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
-  updateUserName(
-    @Body() body: UpdateUserNameDTO,
-    @Req() req: Request,
-  ): Promise<User> {
-    return this.service.updateUserName(body, req);
-  }
-
-  @Put('role')
+  @MessagePattern({ role: 'user', cmd: 'update_role' })
   @Roles(Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
-  updateUserRole(
-    @Body() body: UpdateUserRoleDTO,
-    @Req() req: Request,
-  ): Promise<User> {
-    return this.service.updateUserRole(body, req);
+  updateUserRole(data: UpdateUserRoleDTO): Promise<User> {
+    return this.service.updateUserRole(data);
   }
 }

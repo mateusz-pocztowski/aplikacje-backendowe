@@ -1,11 +1,14 @@
 import { Trim } from 'class-sanitizer';
 import { IsString } from 'class-validator';
+import { User } from '../user/user.entity';
 import { Role } from '../roles/roles.enum';
 
 export class UpdateUserNameDTO {
   @Trim()
   @IsString()
   readonly name: string;
+
+  readonly user: User;
 }
 
 export class UpdateUserRoleDTO {

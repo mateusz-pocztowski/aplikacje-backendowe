@@ -1,14 +1,10 @@
 import * as bcrypt from 'bcryptjs';
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthHelper {
@@ -46,13 +42,19 @@ export class AuthHelper {
     const decoded: unknown = this.jwt.verify(token);
 
     if (!decoded) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new RpcException({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'Unauthorized',
+      });
     }
 
     const user = await this.validateUser(decoded);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'Unauthorized',
+      });
     }
 
     return true;

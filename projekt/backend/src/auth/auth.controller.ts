@@ -5,14 +5,16 @@ import {
   Post,
   ClassSerializerInterceptor,
   UseInterceptors,
-  UseGuards,
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { User } from 'src/modules/user/user.entity';
-import { RegisterDTO, LoginDTO, AuthDTO } from 'src/modules/auth/auth.dto';
-import { AuthGuard } from 'src/modules/auth/auth.guard';
-import { AuthService } from 'src/modules/auth/auth.service';
+import {
+  RegisterDTO,
+  LoginDTO,
+  AuthDTO,
+} from '../../services/auth/src/auth.dto';
+import { AuthService } from './auth.service';
+import { User } from '../../services/user/src/user/user.entity';
 
 @Controller('api/auth')
 export class AuthController {
@@ -32,8 +34,7 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(AuthGuard)
   refresh(@Req() { user }: Request): Promise<string> {
-    return this.service.refresh(<User>user);
+    return this.service.refresh(user);
   }
 }

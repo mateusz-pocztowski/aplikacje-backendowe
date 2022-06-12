@@ -1,17 +1,26 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from 'src/modules/user/user.module';
-import { TypeOrmConfigService } from 'src/shared/typeorm.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`,
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
-    UserModule,
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: { port: 3001 },
+      },
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: { port: 3002 },
+      },
+    ]),
   ],
+  controllers: [AuthController, UserController],
+  providers: [AuthService, UserService],
 })
 export class AppModule {}

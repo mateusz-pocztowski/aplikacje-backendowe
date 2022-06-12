@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user/user.entity';
 import { RegisterDTO, LoginDTO, AuthDTO } from './auth.dto';
 import { AuthHelper } from './auth.helper';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,10 @@ export class AuthService {
     });
 
     if (user) {
-      throw new HttpException('User already exists', HttpStatus.CONFLICT);
+      throw new RpcException({
+        status: HttpStatus.CONFLICT,
+        message: 'User already exists',
+      });
     }
 
     user = new User({
@@ -42,7 +46,10 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new HttpException('No user found', HttpStatus.NOT_FOUND);
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: 'No user found',
+      });
     }
 
     const isPasswordValid = this.helper.isPasswordValid(
@@ -51,7 +58,10 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new HttpException('Password is invalid', HttpStatus.NOT_FOUND);
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: 'Password is invalid',
+      });
     }
 
     return { jwt_token: this.helper.generateToken(user) };
@@ -59,7 +69,10 @@ export class AuthService {
 
   async refresh(user: User): Promise<string> {
     if (!user) {
-      throw new HttpException('Invalid user', HttpStatus.BAD_REQUEST);
+      throw new RpcException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Invalid user',
+      });
     }
 
     return this.helper.generateToken(user);
