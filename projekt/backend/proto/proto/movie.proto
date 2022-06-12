@@ -45,7 +45,8 @@ message FindOneResponse {
 
 message RateMovieRequest {
   int32 id = 1;
-  double rate = 2;
+  int32 userId = 2;
+  double rate = 3;
 }
 
 message RateMovieResponse {

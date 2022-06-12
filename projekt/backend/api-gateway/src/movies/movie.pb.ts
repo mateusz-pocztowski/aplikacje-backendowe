@@ -37,6 +37,7 @@ export interface FindOneResponse {
 
 export interface RateMovieRequest {
   id: number;
+  userId: number;
   rate: number;
 }
 
