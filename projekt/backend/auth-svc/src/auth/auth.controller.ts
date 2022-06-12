@@ -4,12 +4,14 @@ import {
   LoginRequestDto,
   RegisterRequestDto,
   ValidateRequestDto,
+  UpdateRoleRequestDto,
 } from './auth.dto';
 import {
   AUTH_SERVICE_NAME,
   RegisterResponse,
   LoginResponse,
   ValidateResponse,
+  UpdateRoleResponse,
 } from './auth.pb';
 import { AuthService } from './service/auth.service';
 
@@ -31,5 +33,12 @@ export class AuthController {
   @GrpcMethod(AUTH_SERVICE_NAME, 'Validate')
   private validate(payload: ValidateRequestDto): Promise<ValidateResponse> {
     return this.service.validate(payload);
+  }
+
+  @GrpcMethod(AUTH_SERVICE_NAME, 'UpdateRole')
+  private updateRole(
+    payload: UpdateRoleRequestDto,
+  ): Promise<UpdateRoleResponse> {
+    return this.service.updateRole(payload);
   }
 }

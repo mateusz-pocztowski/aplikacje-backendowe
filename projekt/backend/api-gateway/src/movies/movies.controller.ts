@@ -12,6 +12,7 @@ import {
   Put,
   Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import {
@@ -29,7 +30,8 @@ import {
   MOVIE_SERVICE_NAME,
 } from './movie.pb';
 import { AuthGuard } from '../auth/auth.guard';
-import { Request } from 'express';
+import { Roles } from '../auth/roles/roles.decorator';
+import { UserRole } from '../auth/auth.pb';
 
 @Controller('api/movies')
 export class MoviesController implements OnModuleInit {
@@ -57,6 +59,7 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Post()
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @UseGuards(AuthGuard)
   private async createMovie(
     @Body() body: CreateMovieRequest,
@@ -65,6 +68,7 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Put(':id')
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @UseGuards(AuthGuard)
   private async editMovie(
     @Param('id', ParseIntPipe) id: number,
@@ -74,6 +78,7 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Delete(':id')
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @UseGuards(AuthGuard)
   private async deleteMovie(
     @Param('id', ParseIntPipe) id: number,
@@ -82,6 +87,7 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Post('rate/:id')
+  @Roles(UserRole.USER)
   @UseGuards(AuthGuard)
   private async rateMovie(
     @Param('id', ParseIntPipe) id: number,

@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import {
   AuthServiceClient,
   AUTH_SERVICE_NAME,
+  ValidateRequest,
   ValidateResponse,
 } from './auth.pb';
 
@@ -18,7 +19,7 @@ export class AuthService {
     this.svc = this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
-  public async validate(token: string): Promise<ValidateResponse> {
-    return firstValueFrom(this.svc.validate({ token }));
+  public async validate(data: ValidateRequest): Promise<ValidateResponse> {
+    return firstValueFrom(this.svc.validate(data));
   }
 }

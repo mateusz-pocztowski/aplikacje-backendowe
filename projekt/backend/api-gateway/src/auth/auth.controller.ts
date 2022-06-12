@@ -1,6 +1,14 @@
-import { Body, Controller, Inject, OnModuleInit, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  OnModuleInit,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { Roles } from 'src/auth/roles/roles.decorator';
 import {
   AuthServiceClient,
   RegisterResponse,
@@ -8,6 +16,9 @@ import {
   AUTH_SERVICE_NAME,
   LoginRequest,
   LoginResponse,
+  UserRole,
+  UpdateRoleRequest,
+  UpdateRoleResponse,
 } from './auth.pb';
 
 @Controller('api/auth')
@@ -33,5 +44,13 @@ export class AuthController implements OnModuleInit {
     @Body() body: LoginRequest,
   ): Promise<Observable<LoginResponse>> {
     return this.svc.login(body);
+  }
+
+  @Put('role')
+  @Roles(UserRole.OWNER)
+  private async updateRole(
+    @Body() body: UpdateRoleRequest,
+  ): Promise<Observable<UpdateRoleResponse>> {
+    return this.svc.updateRole(body);
   }
 }

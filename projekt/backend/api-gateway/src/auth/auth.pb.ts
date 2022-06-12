@@ -6,6 +6,13 @@ import { Observable } from 'rxjs';
 
 export const protobufPackage = 'auth';
 
+export enum UserRole {
+  OWNER = 0,
+  ADMIN = 1,
+  USER = 2,
+  UNRECOGNIZED = -1,
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -35,6 +42,17 @@ export interface ValidateResponse {
   status: number;
   error: string[];
   userId: number;
+  role: UserRole;
+}
+
+export interface UpdateRoleRequest {
+  role: UserRole;
+  email: string;
+}
+
+export interface UpdateRoleResponse {
+  status: number;
+  error: string[];
 }
 
 export const AUTH_PACKAGE_NAME = 'auth';
@@ -45,6 +63,8 @@ export interface AuthServiceClient {
   login(request: LoginRequest): Observable<LoginResponse>;
 
   validate(request: ValidateRequest): Observable<ValidateResponse>;
+
+  updateRole(request: UpdateRoleRequest): Observable<UpdateRoleResponse>;
 }
 
 export interface AuthServiceController {
@@ -65,11 +85,23 @@ export interface AuthServiceController {
     | Promise<ValidateResponse>
     | Observable<ValidateResponse>
     | ValidateResponse;
+
+  updateRole(
+    request: UpdateRoleRequest,
+  ):
+    | Promise<UpdateRoleResponse>
+    | Observable<UpdateRoleResponse>
+    | UpdateRoleResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['register', 'login', 'validate'];
+    const grpcMethods: string[] = [
+      'register',
+      'login',
+      'validate',
+      'updateRole',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

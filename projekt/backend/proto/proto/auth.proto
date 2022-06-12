@@ -6,6 +6,13 @@ service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse) {}
   rpc Login (LoginRequest) returns (LoginResponse) {}
   rpc Validate (ValidateRequest) returns (ValidateResponse) {}
+  rpc UpdateRole (UpdateRoleRequest) returns (UpdateRoleResponse) {}
+}
+
+enum UserRole {
+  OWNER = 0;
+  ADMIN = 1;
+  USER = 2;
 }
 
 // Register
@@ -43,4 +50,17 @@ message ValidateResponse {
   int32 status = 1;
   repeated string error = 2;
   int32 userId = 3;
+  UserRole role = 4;
+}
+
+// Update role
+
+message UpdateRoleRequest {
+  UserRole role = 1;
+  string email = 2;
+}
+
+message UpdateRoleResponse {
+  int32 status = 1;
+  repeated string error = 2;
 }

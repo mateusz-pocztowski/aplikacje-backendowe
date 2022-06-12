@@ -141,9 +141,12 @@ export class MovieService {
       where: { movie: { id } },
     });
 
-    const avgRate =
-      movieRateLog.reduce((p, c) => p + Number(c.rate), 0) /
-      movieRateLog.length;
+    const avgRate = Number(
+      (
+        movieRateLog.reduce((p, c) => p + Number(c.rate), 0) /
+        movieRateLog.length
+      ).toFixed(2),
+    );
 
     movie.rate = avgRate;
     movie.rateCount = count;

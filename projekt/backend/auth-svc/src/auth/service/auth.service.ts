@@ -6,9 +6,15 @@ import {
   RegisterRequestDto,
   LoginRequestDto,
   ValidateRequestDto,
+  UpdateRoleRequestDto,
 } from '../auth.dto';
 import { Auth } from '../auth.entity';
-import { LoginResponse, RegisterResponse, ValidateResponse } from '../auth.pb';
+import {
+  LoginResponse,
+  RegisterResponse,
+  ValidateResponse,
+  UpdateRoleResponse,
+} from '../auth.pb';
 
 @Injectable()
 export class AuthService {
@@ -80,6 +86,7 @@ export class AuthService {
         status: HttpStatus.FORBIDDEN,
         error: ['Token is invalid'],
         userId: null,
+        role: null,
       };
     }
 
@@ -90,9 +97,35 @@ export class AuthService {
         status: HttpStatus.CONFLICT,
         error: ['User not found'],
         userId: null,
+        role: null,
       };
     }
 
-    return { status: HttpStatus.OK, error: null, userId: decoded.id };
+    return {
+      status: HttpStatus.OK,
+      error: null,
+      userId: auth.id,
+      role: auth.role,
+    };
+  }
+
+  public async updateRole({
+    role,
+    email,
+  }: UpdateRoleRequestDto): Promise<UpdateRoleResponse> {
+    const user: Auth = await this.repository.findOne({ where: { email } });
+
+    if (!user) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: ['User not found'],
+      };
+    }
+
+    user.role = role;
+
+    await this.repository.save(user);
+
+    return { status: HttpStatus.OK, error: null };
   }
 }
