@@ -4,7 +4,10 @@ package movie;
 
 service MovieService {
   rpc CreateMovie (CreateMovieRequest) returns (CreateMovieResponse) {}
+  rpc EditMovie (EditMovieRequest) returns (EditMovieResponse) {}
+  rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse) {}
   rpc FindOne (FindOneRequest) returns (FindOneResponse) {}
+  rpc GetAllMovies (GetAllMoviesRequest) returns (GetAllMoviesResponse) {}
   rpc RateMovie (RateMovieRequest) returns (RateMovieResponse) {}
 }
 
@@ -13,13 +16,53 @@ service MovieService {
 message CreateMovieRequest {
   string name = 1;
   string genre = 2;
-  double rate = 3;
 }
 
 message CreateMovieResponse {
   int32 status = 1;
   repeated string error = 2;
-  int32 id = 3;
+  FindOneData data = 3;
+}
+
+// EditMovie
+
+message EditMovieRequest {
+  int32 id = 1;
+  string name = 2;
+  string genre = 3;
+  double rate = 4;
+}
+
+message EditMovieResponse {
+  int32 status = 1;
+  repeated string error = 2;
+  FindOneData data = 3;
+}
+
+// DeleteMovie
+
+message DeleteMovieRequest {
+  int32 id = 1;
+}
+
+message DeleteMovieResponse {
+  int32 status = 1;
+  repeated string error = 2;
+}
+
+// GetAllMovies
+
+message GetAllMoviesData {
+  repeated FindOneData movies = 1;
+  int32 count = 2;
+}
+
+message GetAllMoviesRequest {}
+
+message GetAllMoviesResponse {
+  int32 status = 1;
+  repeated string error = 2;
+  GetAllMoviesData data = 3;
 }
 
 // FindOne
