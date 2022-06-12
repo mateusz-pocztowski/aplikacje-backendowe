@@ -30,7 +30,6 @@ message EditMovieRequest {
   int32 id = 1;
   string name = 2;
   string genre = 3;
-  double rate = 4;
 }
 
 message EditMovieResponse {

@@ -4,13 +4,19 @@ import { Repository } from 'typeorm';
 import { Movie } from './entity/movie.entity';
 import {
   CreateMovieRequestDto,
+  EditMovieRequestDto,
+  DeleteMovieRequestDto,
   RateMovieRequestDto,
   FindOneRequestDto,
+  GetAllMoviesRequestDto,
 } from './movie.dto';
 import {
   CreateMovieResponse,
+  EditMovieResponse,
+  DeleteMovieResponse,
   RateMovieResponse,
   FindOneResponse,
+  GetAllMoviesResponse,
 } from './movie.pb';
 import { MovieRateLog } from './entity/movie-rate-log.entity';
 
@@ -21,6 +27,12 @@ export class MovieService {
 
   @InjectRepository(MovieRateLog)
   private readonly movieRateLog: Repository<MovieRateLog>;
+
+  public async getAllMovies({}: GetAllMoviesRequestDto): Promise<GetAllMoviesResponse> {
+    const [movies, count] = await this.repository.findAndCount();
+
+    return { data: { movies, count }, error: null, status: HttpStatus.OK };
+  }
 
   public async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
     const movie: Movie = await this.repository.findOne({ where: { id } });
@@ -43,11 +55,49 @@ export class MovieService {
 
     movie.name = payload.name;
     movie.genre = payload.genre;
-    movie.rate = payload.rate;
+    movie.rate = 0;
 
     await this.repository.save(movie);
 
-    return { id: movie.id, error: null, status: HttpStatus.OK };
+    return { data: movie, error: null, status: HttpStatus.OK };
+  }
+
+  public async editMovie(
+    payload: EditMovieRequestDto,
+  ): Promise<EditMovieResponse> {
+    let movie: Movie = await this.repository.findOne({
+      where: { id: payload.id },
+    });
+
+    if (!movie) {
+      return {
+        data: null,
+        error: ['Movie not found'],
+        status: HttpStatus.NOT_FOUND,
+      };
+    }
+
+    movie.name = payload.name;
+    movie.genre = payload.genre;
+
+    movie = await this.repository.save(movie);
+
+    return { data: movie, error: null, status: HttpStatus.OK };
+  }
+
+  public async deleteMovie(
+    payload: DeleteMovieRequestDto,
+  ): Promise<DeleteMovieResponse> {
+    const { affected } = await this.repository.delete({ id: payload.id });
+
+    if (affected === 0) {
+      return {
+        error: ['Movie not found'],
+        status: HttpStatus.NOT_FOUND,
+      };
+    }
+
+    return { error: null, status: HttpStatus.OK };
   }
 
   public async rateMovie({
@@ -78,6 +128,8 @@ export class MovieService {
         status: HttpStatus.CONFLICT,
       };
     }
+
+    console.log(movie.movieRateLogs);
 
     // TODO: calculate average rate
     await this.repository.update(movie.id, { rate: rate });

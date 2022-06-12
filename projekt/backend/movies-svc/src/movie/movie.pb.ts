@@ -9,13 +9,46 @@ export const protobufPackage = 'movie';
 export interface CreateMovieRequest {
   name: string;
   genre: string;
-  rate: number;
 }
 
 export interface CreateMovieResponse {
   status: number;
   error: string[];
+  data: FindOneData | undefined;
+}
+
+export interface EditMovieRequest {
   id: number;
+  name: string;
+  genre: string;
+}
+
+export interface EditMovieResponse {
+  status: number;
+  error: string[];
+  data: FindOneData | undefined;
+}
+
+export interface DeleteMovieRequest {
+  id: number;
+}
+
+export interface DeleteMovieResponse {
+  status: number;
+  error: string[];
+}
+
+export interface GetAllMoviesData {
+  movies: FindOneData[];
+  count: number;
+}
+
+export interface GetAllMoviesRequest {}
+
+export interface GetAllMoviesResponse {
+  status: number;
+  error: string[];
+  data: GetAllMoviesData | undefined;
 }
 
 export interface FindOneData {
@@ -51,7 +84,13 @@ export const MOVIE_PACKAGE_NAME = 'movie';
 export interface MovieServiceClient {
   createMovie(request: CreateMovieRequest): Observable<CreateMovieResponse>;
 
+  editMovie(request: EditMovieRequest): Observable<EditMovieResponse>;
+
+  deleteMovie(request: DeleteMovieRequest): Observable<DeleteMovieResponse>;
+
   findOne(request: FindOneRequest): Observable<FindOneResponse>;
+
+  getAllMovies(request: GetAllMoviesRequest): Observable<GetAllMoviesResponse>;
 
   rateMovie(request: RateMovieRequest): Observable<RateMovieResponse>;
 }
@@ -64,9 +103,30 @@ export interface MovieServiceController {
     | Observable<CreateMovieResponse>
     | CreateMovieResponse;
 
+  editMovie(
+    request: EditMovieRequest,
+  ):
+    | Promise<EditMovieResponse>
+    | Observable<EditMovieResponse>
+    | EditMovieResponse;
+
+  deleteMovie(
+    request: DeleteMovieRequest,
+  ):
+    | Promise<DeleteMovieResponse>
+    | Observable<DeleteMovieResponse>
+    | DeleteMovieResponse;
+
   findOne(
     request: FindOneRequest,
   ): Promise<FindOneResponse> | Observable<FindOneResponse> | FindOneResponse;
+
+  getAllMovies(
+    request: GetAllMoviesRequest,
+  ):
+    | Promise<GetAllMoviesResponse>
+    | Observable<GetAllMoviesResponse>
+    | GetAllMoviesResponse;
 
   rateMovie(
     request: RateMovieRequest,
@@ -78,7 +138,14 @@ export interface MovieServiceController {
 
 export function MovieServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['createMovie', 'findOne', 'rateMovie'];
+    const grpcMethods: string[] = [
+      'createMovie',
+      'editMovie',
+      'deleteMovie',
+      'findOne',
+      'getAllMovies',
+      'rateMovie',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

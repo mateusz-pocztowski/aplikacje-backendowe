@@ -10,7 +10,7 @@ import {
   LoginResponse,
 } from './auth.pb';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController implements OnModuleInit {
   private svc: AuthServiceClient;
 

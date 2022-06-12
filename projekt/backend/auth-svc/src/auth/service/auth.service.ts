@@ -25,7 +25,7 @@ export class AuthService {
     let auth: Auth = await this.repository.findOne({ where: { email } });
 
     if (auth) {
-      return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
+      return { status: HttpStatus.CONFLICT, error: ['User already exists'] };
     }
 
     auth = new Auth();
@@ -47,7 +47,7 @@ export class AuthService {
     if (!auth) {
       return {
         status: HttpStatus.NOT_FOUND,
-        error: ['E-Mail not found'],
+        error: ['User not found'],
         token: null,
       };
     }
@@ -60,7 +60,7 @@ export class AuthService {
     if (!isPasswordValid) {
       return {
         status: HttpStatus.NOT_FOUND,
-        error: ['Password wrong'],
+        error: ['Password is wrong'],
         token: null,
       };
     }
