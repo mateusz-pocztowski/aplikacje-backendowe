@@ -11,9 +11,15 @@ import {
 export class FindOneRequestDto implements FindOneRequest {
   @IsNumber({ allowInfinity: false, allowNaN: false })
   public readonly id: number;
+
+  @IsNumber({ allowInfinity: false, allowNaN: false })
+  public readonly userId: number;
 }
 
-export class GetAllMoviesRequestDto implements GetAllMoviesRequest {}
+export class GetAllMoviesRequestDto implements GetAllMoviesRequest {
+  @IsNumber({ allowInfinity: false, allowNaN: false })
+  public readonly userId: number;
+}
 
 export class CreateMovieRequestDto implements CreateMovieRequest {
   @IsString()

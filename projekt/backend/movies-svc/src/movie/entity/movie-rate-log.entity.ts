@@ -18,6 +18,8 @@ export class MovieRateLog extends BaseEntity {
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   public rate!: number;
 
-  @ManyToOne(() => Movie, (movie) => movie.movieRateLogs)
+  @ManyToOne(() => Movie, (movie) => movie.movieRateLogs, {
+    onDelete: 'CASCADE',
+  })
   public movie: Movie;
 }

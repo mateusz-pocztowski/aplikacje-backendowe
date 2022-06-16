@@ -28,13 +28,38 @@ export class MovieService {
   @InjectRepository(MovieRateLog)
   private readonly movieRateLog: Repository<MovieRateLog>;
 
-  public async getAllMovies({}: GetAllMoviesRequestDto): Promise<GetAllMoviesResponse> {
-    const [movies, count] = await this.repository.findAndCount();
+  private async attachUserRate(movie: Movie, userId: number): Promise<Movie> {
+    if (!userId) {
+      return movie;
+    }
 
-    return { data: { movies, count }, error: null, status: HttpStatus.OK };
+    const rateLog = await this.movieRateLog.findOne({
+      where: { movie: { id: movie.id }, userId },
+    });
+
+    return Object.assign(movie, { userRate: rateLog?.rate });
   }
 
-  public async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
+  public async getAllMovies({
+    userId,
+  }: GetAllMoviesRequestDto): Promise<GetAllMoviesResponse> {
+    const [movies, count] = await this.repository.findAndCount();
+
+    const moviesWithUserRate = await Promise.all(
+      movies.map((movie) => this.attachUserRate(movie, userId)),
+    );
+
+    return {
+      data: { movies: moviesWithUserRate, count },
+      error: null,
+      status: HttpStatus.OK,
+    };
+  }
+
+  public async findOne({
+    id,
+    userId,
+  }: FindOneRequestDto): Promise<FindOneResponse> {
     const movie: Movie = await this.repository.findOne({ where: { id } });
 
     if (!movie) {
@@ -45,7 +70,9 @@ export class MovieService {
       };
     }
 
-    return { data: movie, error: null, status: HttpStatus.OK };
+    const movieWithUserRate = await this.attachUserRate(movie, userId);
+
+    return { data: movieWithUserRate, error: null, status: HttpStatus.OK };
   }
 
   public async createMovie(

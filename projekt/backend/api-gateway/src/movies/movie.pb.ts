@@ -43,7 +43,9 @@ export interface GetAllMoviesData {
   count: number;
 }
 
-export interface GetAllMoviesRequest {}
+export interface GetAllMoviesRequest {
+  userId?: number | undefined;
+}
 
 export interface GetAllMoviesResponse {
   status: number;
@@ -57,10 +59,12 @@ export interface FindOneData {
   genre: string;
   rate: number;
   rateCount: number;
+  userRate: number;
 }
 
 export interface FindOneRequest {
   id: number;
+  userId?: number | undefined;
 }
 
 export interface FindOneResponse {

@@ -24,6 +24,9 @@ export class Movie extends BaseEntity {
   @Column({ type: 'integer' })
   public rateCount!: number;
 
+  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
+  public userRate: number;
+
   @OneToMany(() => MovieRateLog, (movieRateLog) => movieRateLog.movie)
   public movieRateLogs: MovieRateLog[];
 }

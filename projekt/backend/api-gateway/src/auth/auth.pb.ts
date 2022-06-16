@@ -48,6 +48,7 @@ export interface LoginResponse {
   status: number;
   error: string[];
   token: string;
+  role: UserRole;
 }
 
 export interface ValidateRequest {

@@ -56,7 +56,9 @@ message GetAllMoviesData {
   int32 count = 2;
 }
 
-message GetAllMoviesRequest {}
+message GetAllMoviesRequest {
+  optional int32 userId = 1;
+}
 
 message GetAllMoviesResponse {
   int32 status = 1;
@@ -72,10 +74,12 @@ message FindOneData {
   string genre = 3;
   double rate = 4;
   double rateCount = 5;
+  double userRate = 6;
 }
 
 message FindOneRequest {
   int32 id = 1;
+  optional int32 userId = 2;
 }
 
 message FindOneResponse {

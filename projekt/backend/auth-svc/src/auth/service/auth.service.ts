@@ -65,6 +65,7 @@ export class AuthService {
         status: HttpStatus.NOT_FOUND,
         error: ['User not found'],
         token: null,
+        role: null,
       };
     }
 
@@ -78,12 +79,13 @@ export class AuthService {
         status: HttpStatus.NOT_FOUND,
         error: ['Password is wrong'],
         token: null,
+        role: null,
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
 
-    return { token, status: HttpStatus.OK, error: null };
+    return { token, role: auth.role, status: HttpStatus.OK, error: null };
   }
 
   public async validate({

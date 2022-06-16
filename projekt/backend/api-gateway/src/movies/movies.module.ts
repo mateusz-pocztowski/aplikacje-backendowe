@@ -12,7 +12,7 @@ import { MoviesController } from './movies.controller';
         options: {
           url: '0.0.0.0:50053',
           package: MOVIE_PACKAGE_NAME,
-          protoPath: 'node_modules/proto/proto/movie.proto',
+          protoPath: 'node_modules/proto/models/movie.proto',
         },
       },
     ]),

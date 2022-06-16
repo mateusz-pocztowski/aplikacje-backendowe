@@ -11,6 +11,7 @@ import {
   Delete,
   Put,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -32,6 +33,7 @@ import {
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { UserRole } from '../auth/auth.pb';
+import { AuthInterceptor } from '../auth/auth.interceptor';
 
 @Controller('api/movies')
 export class MoviesController implements OnModuleInit {
@@ -45,17 +47,21 @@ export class MoviesController implements OnModuleInit {
   }
 
   @Get()
+  @UseInterceptors(AuthInterceptor)
   private async getAllMovies(
     @Body() body: GetAllMoviesRequest,
+    @Req() req: Request,
   ): Promise<Observable<GetAllMoviesResponse>> {
-    return this.svc.getAllMovies(body);
+    return this.svc.getAllMovies({ ...body, userId: req.user ?? 0 });
   }
 
   @Get(':id')
+  @UseInterceptors(AuthInterceptor)
   private async findOne(
     @Param('id', ParseIntPipe) id: number,
+    @Req() req: Request,
   ): Promise<Observable<FindOneResponse>> {
-    return this.svc.findOne({ id });
+    return this.svc.findOne({ id, userId: req.user ?? 0 });
   }
 
   @Post()

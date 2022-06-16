@@ -13,7 +13,7 @@ async function bootstrap() {
       options: {
         url: '0.0.0.0:50053',
         package: protobufPackage,
-        protoPath: join('node_modules/proto/proto/movie.proto'),
+        protoPath: join('node_modules/proto/models/movie.proto'),
       },
     },
   );
