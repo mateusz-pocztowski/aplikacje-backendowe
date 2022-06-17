@@ -1,7 +1,7 @@
+import { join } from 'path';
 import { INestMicroservice, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
-import { join } from 'path';
 import { AppModule } from './app.module';
 import { protobufPackage } from './movie/movie.pb';
 
@@ -11,9 +11,9 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: '0.0.0.0:50053',
+        url: process.env.MOVIE_SVC_URL,
         package: protobufPackage,
-        protoPath: join('node_modules/proto/models/movie.proto'),
+        protoPath: join(process.env.MOVIE_SVC_PROTO_PATH),
       },
     },
   );

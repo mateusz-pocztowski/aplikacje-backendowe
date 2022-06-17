@@ -1,7 +1,7 @@
+import { join } from 'path';
 import { INestMicroservice, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
-import { join } from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './auth/filter/http-exception.filter';
 import { protobufPackage } from './auth/auth.pb';
@@ -12,9 +12,9 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: '0.0.0.0:50051',
+        url: process.env.AUTH_SVC_URL,
         package: protobufPackage,
-        protoPath: join('node_modules/proto/models/auth.proto'),
+        protoPath: join(process.env.AUTH_SVC_PROTO_PATH),
       },
     },
   );

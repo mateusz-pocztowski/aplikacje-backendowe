@@ -22,7 +22,7 @@ const NODE_ENV = process.env.NODE_ENV ?? 'development';
         migrations: ['dist/migrations/*.{ts,js}'],
         migrationsTableName: 'typeorm_migrations',
         logger: 'file',
-        synchronize: NODE_ENV === 'development',
+        synchronize: true,
       }),
     }),
     AuthModule,

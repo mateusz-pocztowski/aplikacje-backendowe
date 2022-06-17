@@ -19,7 +19,7 @@ const NODE_ENV = process.env.NODE_ENV ?? 'development';
         username: config.get<string>('DATABASE_USER'),
         password: config.get<string>('DATABASE_PASSWORD'),
         entities: ['dist/**/*.entity.{ts,js}'],
-        synchronize: NODE_ENV === 'development',
+        synchronize: true,
       }),
     }),
     MovieModule,

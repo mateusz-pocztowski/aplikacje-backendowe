@@ -1,0 +1,61 @@
+version: '3'
+services:
+  web:
+    container_name: web
+    build: ./frontend
+    hostname: web
+    ports:
+      - 3000:3000
+    networks:
+      - frontend
+
+  api-gateway:
+    container_name: api-gateway
+    build: ./backend/api-gateway
+    hostname: api-gateway
+    ports:
+      - '8080:8080'
+    networks:
+      - backend
+      - frontend
+
+  auth-svc:
+    container_name: auth-svc
+    build: ./backend/auth-svc
+    hostname: auth
+    networks:
+      - backend
+    # ports:
+    #   - '50051:50051'
+    depends_on:
+      - postgres
+
+  movies-svc:
+    container_name: movies-svc
+    build: ./backend/movies-svc
+    hostname: movies
+    networks:
+      - backend
+    # ports:
+    #   - '50053:50053'
+    depends_on:
+      - postgres
+
+  postgres:
+    image: 'postgres:alpine'
+    volumes:
+      - ./scripts/create-multiple-postgres-databases.sh:/docker-entrypoint-initdb.d/create-multiple-postgres-databases.sh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_MULTIPLE_DATABASES: movieranker_auth,movieranker_movies
+    ports:
+      - 35000:5433
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

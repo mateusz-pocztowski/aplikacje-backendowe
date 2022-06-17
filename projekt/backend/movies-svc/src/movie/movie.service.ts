@@ -43,7 +43,9 @@ export class MovieService {
   public async getAllMovies({
     userId,
   }: GetAllMoviesRequestDto): Promise<GetAllMoviesResponse> {
-    const [movies, count] = await this.repository.findAndCount();
+    const [movies, count] = await this.repository.findAndCount({
+      order: { rate: 'DESC' },
+    });
 
     const moviesWithUserRate = await Promise.all(
       movies.map((movie) => this.attachUserRate(movie, userId)),
