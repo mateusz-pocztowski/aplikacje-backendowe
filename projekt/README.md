@@ -2,16 +2,23 @@
 
 ### Temat
 
-Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do filmweb.pl). Użytkownicy zostaną podzieleni na trzy role - administrator, moderator oraz zwykły użytkownik. Administrator to najwyższa rola w systemie, może on nadawać innym użytkownikom poszczególne role. Zarówno administrator jak i moderator będzie mieć możliwość dodawania, usuwania, edytowania filmów. Tylko **zalogowani** użytkownicy będą mogli mieć możliwość oceny dostępnych na stronie filmów. Autoryzacja zostanie oparta o JWT token, komunikacja między serwisami przez gRPC. Frontend będzie wydzielony osobno, napisany w Reactcie.
+Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do filmweb.pl). Użytkownicy zostaną podzieleni na trzy role - administrator, moderator oraz zwykły użytkownik. Administrator to najwyższa rola w systemie, może on nadawać innym użytkownikom poszczególne role. Zarówno administrator jak i moderator będzie mieć możliwość dodawania, usuwania, edytowania filmów. Tylko **zalogowani** użytkownicy będą mogli mieć możliwość oceny dostępnych na stronie filmów. Autoryzacja zostanie oparta o JWT token, komunikacja między serwisami przez framework gRPC. Frontend będzie wydzielony osobno, napisany w Reactcie.
 
 ### Technologie
 
-- NestJS & TypeScript
+- NestJS
+- TypeScript
 - gRPC
 - PostgreSQL
 - TypeORM
 - Docker
 - React
+
+### Infrastruktura
+
+![obraz](https://user-images.githubusercontent.com/55945204/174445511-0bb1d4c2-6df2-4acd-b879-2ecb1b4d5e72.png)
+
+Projekt opiera się o architekture mikroserwisową oraz API Gateway, które jest entrypointem dla requestów przychodzących od strony frontu. Każdy mikroserwis posiada swoją baze danych, z którą zintegrowany jest przez TypeORM. Zapytanie HTTP trafia do API Gateway, które potem przekierowuje request do odpowiedniego mikroserwisu przez framework gRPC, mikroserwis zwraca response do API Gateway, które potem przekazuje go klientowi. 
 
 ### Instalacja
 
