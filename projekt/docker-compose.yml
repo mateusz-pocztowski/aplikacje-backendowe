@@ -25,8 +25,8 @@ services:
     hostname: auth
     networks:
       - backend
-    # ports:
-    #   - '50051:50051'
+    ports:
+      - '50051:50051'
     depends_on:
       - postgres
 
@@ -36,8 +36,8 @@ services:
     hostname: movies
     networks:
       - backend
-    # ports:
-    #   - '50053:50053'
+    ports:
+      - '50053:50053'
     depends_on:
       - postgres
 
@@ -45,6 +45,7 @@ services:
     image: 'postgres:alpine'
     volumes:
       - ./scripts/create-multiple-postgres-databases.sh:/docker-entrypoint-initdb.d/create-multiple-postgres-databases.sh
+      - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -59,3 +60,6 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
+
+volumes:
+  pgdata:
