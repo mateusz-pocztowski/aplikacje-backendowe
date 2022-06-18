@@ -15,6 +15,12 @@ Projekt będzie polegał na wykonaniu aplikacji rankingowej filmów (podobnej do
 
 ### Instalacja
 
+Skopiowanie modeli protobuff do poszczególnych mikroserwisów
+
+```
+./scripts/proto.sh
+```
+
 Utworzenie i start wszystkich kontenerów
 
 ```
