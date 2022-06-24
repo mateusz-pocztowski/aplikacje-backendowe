@@ -52,8 +52,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^8.0.1",
-    "lint-staged": "^12.4.1",
     "prettier": "^2.6.2"
   },
   "eslintConfig": {
@@ -61,8 +59,5 @@
       "react-app",
       "react-app/jest"
     ]
-  },
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
   }
 }
